@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travel Gate Ultra - بوابتك الملكية الفاخرة الشاملة</title>
+    <style>
+        :root {
+            --primary-bg: #0b132b;
+            --secondary-bg: #1c2541;
+            --accent-gold: #c5a880;
+            --accent-gold-hover: #e5c99e;
+            --text-light: #f4f7f6;
+            --text-muted: #a0aec0;
+            --glass-bg: rgba(28, 37, 65, 0.85);
+            --glass-border: rgba(197, 168, 128, 0.25);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        body {
+            background-color: var(--primary-bg);
+            color: var(--text-light);
+            overflow-x: hidden;
+            padding-bottom: 70px;
+        }
+
+        /* شاشة الترحيب واختيار اللغة */
+        .welcome-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0b132b 0%, #111a36 100%);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .welcome-logo {
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--text-light);
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            text-shadow: 0 0 20px rgba(197, 168, 128, 0.3);
+        }
+
+        .welcome-logo span {
+            color: var(--accent-gold);
+        }
+
+        .global-ticker {
+            width: 100%;
+            max-width: 850px;
+            overflow: hidden;
+            white-space: nowrap;
+            border-top: 1px solid var(--glass-border);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 15px 0;
+            margin: 25px 0 35px 0;
+            background: rgba(255,255,255,0.01);
+        }
+
+        .ticker-text {
+            display: inline-block;
+            font-size: 1.6rem;
+            color: var(--accent-gold);
+            font-weight: 300;
+            animation: tickerScroll 30s linear infinite;
+        }
+
+        @keyframes tickerScroll {
+            0% { transform: translate3d(50%, 0, 0); }
+            100% { transform: translate3d(-100%, 0, 0); }
+        }
+
+        .welcome-screen h2 {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            font-weight: 400;
+        }
+
+        .lang-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 10px;
+            max-width: 900px;
+            width: 100%;
+            max-height: 45vh;
+            overflow-y: auto;
+            padding: 15px;
+            background: rgba(255,255,255,0.02);
+            border-radius: 16px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .sidebar .lang-grid {
+            grid-template-columns: repeat(2, 1fr);
+            max-height: 40vh;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 10px;
+        }
+
+        .lang-btn {
+            background: var(--secondary-bg);
+            border: 1px solid var(--glass-border);
+            color: var(--text-light);
+            padding: 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .lang-btn:hover {
+            background: var(--accent-gold);
+            color: var(--primary-bg);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(197, 168, 128, 0.3);
+        }
+
+        /* شريط التنقل العلوي */
+        .navbar {
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 100;
+            box-shadow: 0 4px 30px rgba(0,0,0,0.2);
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--text-light);
+            text-decoration: none;
+            cursor: pointer;
+            letter-spacing: 1px;
+        }
+
+        .logo span {
+            color: var(--accent-gold);
+        }
+
+        .menu-toggle {
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            background: none;
+            border: none;
+            padding: 10px;
+            z-index: 110;
+        }
+
+        .menu-toggle .bar {
+            width: 30px;
+            height: 3px;
+            background-color: var(--accent-gold);
+            border-radius: 4px;
+        }
+
+        /* القائمة الجانبية مخصصة للمطورين والشكاوي واللغات */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: -360px;
+            width: 360px;
+            height: 100%;
+            background: rgba(11, 19, 43, 0.98);
+            backdrop-filter: blur(25px);
+            border-left: 1px solid var(--glass-border);
+            z-index: 200;
+            padding: 90px 25px 30px 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            box-shadow: -15px 0 40px rgba(0,0,0,0.6);
+            overflow-y: auto;
+        }
+
+        .sidebar.active {
+            right: 0;
+        }
+
+        .sidebar-link {
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 1.05rem;
+            font-weight: 600;
+            padding: 14px 18px;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sidebar-link.dev-link {
+            border-color: #00a8ff;
+            background: rgba(0, 168, 255, 0.05);
+        }
+
+        .sidebar-link.dev-link:hover {
+            background: #00a8ff;
+            color: #fff;
+        }
+
+        .sidebar-link.complaint-link:hover {
+            background: #25d366;
+            color: #fff;
+        }
+
+        .sidebar-title {
+            color: var(--accent-gold);
+            font-size: 1rem;
+            font-weight: bold;
+            margin-top: 15px;
+            border-bottom: 1px solid var(--glass-border);
+            padding-bottom: 8px;
+        }
+
+        .sidebar-close {
+            position: absolute;
+            top: 25px;
+            left: 25px;
+            background: none;
+            border: none;
+            color: var(--accent-gold);
+            font-size: 2.2rem;
+            cursor: pointer;
+        }
+
+        /* شاشة التحويل الوسيطة الفاخرة (8 ثواني بالطائرة المتحركة) */
+        .redirect-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0b132b;
+            z-index: 2000;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .redirect-box {
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .redirect-text {
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: var(--text-light);
+            margin-bottom: 10px;
+        }
+
+        .redirect-subtext {
+            color: var(--accent-gold);
+            font-size: 1.1rem;
+            margin-bottom: 40px;
+        }
+
+        .airplane-container {
+            position: relative;
+            width: 100%;
+            height: 120px;
+            margin-bottom: 30px;
+            overflow: hidden;
+            border-bottom: 2px dashed rgba(197, 168, 128, 0.2);
+        }
+
+        .airplane {
+            position: absolute;
+            font-size: 4rem;
+            bottom: 10px;
+            left: -100px;
+            transform: scaleX(-1);
+            animation: flyAround 4s linear infinite;
+        }
+
+        @keyframes flyAround {
+            0% { left: -100px; transform: scaleX(-1) translateY(0px) rotate(0deg); }
+            50% { transform: scaleX(-1) translateY(-25px) rotate(-5deg); }
+            100% { left: 100%; transform: scaleX(-1) translateY(0px) rotate(0deg); }
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(to left, var(--accent-gold), #e5c99e);
+            border-radius: 10px;
+        }
+
+        /* محتويات المنصة والشبكة الرئيسية */
+        .main-wrapper {
+            margin-top: 110px;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .hero-section {
+            text-align: center;
+            padding: 30px 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero-section h1 {
+            font-size: 2.6rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            background: linear-gradient(to left, #fff, var(--accent-gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-section p {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
+        .search-container {
+            max-width: 650px;
+            margin: 0 auto 45px auto;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 16px 28px;
+            font-size: 1.1rem;
+            background: var(--secondary-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 50px;
+            color: white;
+            outline: none;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+        }
+
+        .search-input:focus {
+            border-color: var(--accent-gold);
+            box-shadow: 0 10px 30px rgba(197, 168, 128, 0.25);
+        }
+
+        .search-results-section {
+            display: none;
+            background: var(--secondary-bg);
+            border-radius: 18px;
+            padding: 30px;
+            margin-bottom: 40px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .search-results-section h3 {
+            color: var(--accent-gold);
+            margin-bottom: 25px;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .card {
+            background: linear-gradient(145deg, #1c2541 0%, #111a36 100%);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 40px rgba(197, 168, 128, 0.2);
+            border-color: rgba(197, 168, 128, 0.6);
+        }
+
+        .icon {
+            font-size: 3.2rem;
+            margin-bottom: 20px;
+        }
+
+        .card h3 {
+            color: #fff;
+            margin-bottom: 15px;
+            font-size: 1.35rem;
+            font-weight: 600;
+        }
+
+        .card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .btn {
+            background: transparent;
+            color: var(--accent-gold);
+            border: 1px solid var(--accent-gold);
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            letter-spacing: 0.5px;
+        }
+
+        .btn:hover {
+            background: var(--accent-gold);
+            color: var(--primary-bg);
+            box-shadow: 0 8px 25px rgba(197, 168, 128, 0.4);
+        }
+
+        .sub-page {
+            display: none;
+            background: var(--secondary-bg);
+            border-radius: 20px;
+            padding: 45px;
+            border: 1px solid var(--glass-border);
+            max-width: 1150px;
+            margin: 0 auto;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            animation: fadeIn 0.4s ease;
+        }
+
+        .sub-page h2 {
+            font-size: 2.2rem;
+            color: var(--accent-gold);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .section-title {
+            color: #fff;
+            font-size: 1.4rem;
+            margin: 35px 0 20px 0;
+            border-right: 4px solid var(--accent-gold);
+            padding-right: 12px;
+            grid-column: 1 / -1;
+        }
+
+        .links-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 18px;
+            margin-bottom: 40px;
+        }
+
+        .site-link {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 22px;
+            color: var(--text-light);
+            text-decoration: none;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.06);
+            cursor: pointer;
+        }
+
+        .site-link:hover {
+            background: rgba(197, 168, 128, 0.1);
+            border-color: var(--accent-gold);
+            transform: translateY(-3px);
+        }
+
+        .site-name {
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .site-url {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            direction: ltr;
+        }
+
+        .back-btn {
+            background-color: rgba(255,255,255,0.04);
+            border: 1px solid var(--text-muted);
+            color: white;
+            max-width: 200px;
+            margin: 0 auto;
+            display: block;
+        }
+
+        footer {
+            background: var(--primary-bg);
+            border-top: 1px solid var(--glass-border);
+            text-align: center;
+            padding: 20px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            z-index: 90;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            .navbar { padding: 15px 20px; }
+            .hero-section h1 { font-size: 1.9rem; }
+            .sub-page { padding: 25px; }
+            .links-list { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="redirect-screen" class="redirect-screen">
+        <div class="redirect-box">
+            <div class="airplane-container">
+                <div class="airplane">✈️</div>
+            </div>
+            <div class="redirect-text">يتم تحويلك للموقع الآن</div>
+            <div class="redirect-subtext">برجاء الانتظار، جاري تأمين الاتصال الملكي...</div>
+            <div class="progress-bar-container">
+                <div id="progress-bar-fill" class="progress-bar-fill"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="welcome-screen" class="welcome-screen">
+        <div class="welcome-logo">TRAVEL<span>GATE</span></div>
+        <div class="global-ticker">
+            <div class="ticker-text">
+                Welcome • أهلاً بك • Bienvenue • Bienvenido • Willkommen • Benvenuto • Welkom • Välkommen • Velkommen • Tervetuloa • Witamy • Добро пожаловать • 👋 • أهلاً وسهلاً بك في بوابة السفر العالمية • Hoş geldiniz • خوش آمدید • پخير راغلاست • 欢迎 • 오신 것을 환영합니다 • Maligayang pagdating • स्वागत है • ¡Bienvenidos!
+            </div>
+        </div>
+        <h2>رجاءً اختر لغة تصفح المنصة / Please Select Browser Language</h2>
+        
+        <div class="lang-grid">
+            <button class="lang-btn" onclick="enterSite('ar')">العربية (Arabic)</button>
+            <button class="lang-btn" onclick="enterSite('en')">English</button>
+            <button class="lang-btn" onclick="enterSite('fr')">Français</button>
+            <button class="lang-btn" onclick="enterSite('es')">Español</button>
+            <button class="lang-btn" onclick="enterSite('pt')">Português</button>
+            <button class="lang-btn" onclick="enterSite('it')">Italiano</button>
+            <button class="lang-btn" onclick="enterSite('de')">Deutsch</button>
+            <button class="lang-btn" onclick="enterSite('nl')">Nederlands</button>
+            <button class="lang-btn" onclick="enterSite('tr')">Türkçe</button>
+            <button class="lang-btn" onclick="enterSite('ru')">Русский</button>
+            <button class="lang-btn" onclick="enterSite('zh')">中文</button>
+            <button class="lang-btn" onclick="enterSite('ur')">Urdu</button>
+        </div>
+    </div>
+
+    <nav class="navbar">
+        <a class="logo" onclick="resetToWelcome()">TRAVEL<span>GATE</span></a>
+        <button class="menu-toggle" onclick="toggleSidebar()">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        </button>
+    </nav>
+
+    <div id="sidebar" class="sidebar">
+        <button class="sidebar-close" onclick="toggleSidebar()">×</button>
+        
+        <a href="https://wa.me/qr/KZJ3C7RRF3VNM1" target="_blank" class="sidebar-link dev-link">👨‍💻 للتواصل مع مطورين الموقع</a>
+        
+        <a href="https://wa.me/qr/7T4VXNZXZM6DO1" target="_blank" class="sidebar-link complaint-link">💬 الاقتراحات والشكاوي والاستعلام</a>
+        
+        <div class="sidebar-title">🌐 لغات المنصة / Languages</div>
+        <div class="lang-grid">
+            <button class="lang-btn" onclick="enterSite('ar')">العربية</button>
+            <button class="lang-btn" onclick="enterSite('en')">English</button>
+            <button class="lang-btn" onclick="enterSite('fr')">Français</button>
+            <button class="lang-btn" onclick="enterSite('es')">Español</button>
+            <button class="lang-btn" onclick="enterSite('pt')">Português</button>
+            <button class="lang-btn" onclick="enterSite('it')">Italiano</button>
+            <button class="lang-btn" onclick="enterSite('de')">Deutsch</button>
+            <button class="lang-btn" onclick="enterSite('nl')">Nederlands</button>
+            <button class="lang-btn" onclick="enterSite('tr')">Türkçe</button>
+            <button class="lang-btn" onclick="enterSite('ru')">Русский</button>
+            <button class="lang-btn" onclick="enterSite('zh')">中文</button>
+            <button class="lang-btn" onclick="enterSite('ur')">Urdu</button>
+        </div>
+    </div>
+
+    <div id="main-wrapper" class="main-wrapper">
+        <div class="hero-section">
+            <h1>بوابتك الاحترافية لعالم السفر</h1>
+            <p>منصة موحدة ذكية تجمع كافة الفنادق الفاخرة، شركات الطيران العالمية ومزودي الخدمات السيادية والمالية</p>
+        </div>
+
+        <div class="container">
+            <div class="search-container">
+                <input type="text" id="main-search" class="search-input" placeholder="ابحث فوراً: wego, flyin, mytrip, trip.com, safarni, one travel...">
+            </div>
+
+            <div id="search-results-section" class="search-results-section">
+                <h3>🔍 نتائج البحث المكتشفة:</h3>
+                <div id="search-results-list" class="links-list"></div>
+            </div>
+
+            <div id="main-page" class="services-grid">
+                
+                <div class="card" style="border-color: #ffd700;">
+                    <div>
+                        <div class="icon">🕋</div>
+                        <h3>الحج والعمرة الشامل</h3>
+                        <p>منصة نسك، المسار الإلكتروني، عروض حملات الحج وحجوزات الفنادق المباشرة المطلة على الحرمين الشريفين.</p>
+                    </div>
+                    <button class="btn" style="border-color: #ffd700; color: #ffd700;" onclick="openPage('umrah-page')">دخول قسم الحرمين</button>
+                </div>
+
+                <div class="card">
+                    <div>
+                        <div class="icon">✈️</div>
+                        <h3>تذاكر الطيران الشامل</h3>
+                        <p>محركات البحث الكبرى مثل Wego و Trip و Flyin بالإضافة لكبرى شركات الطيران العالمية والمحلية الفاخرة.</p>
+                    </div>
+                    <button class="btn" onclick="openPage('flights-page')">استكشاف شركات الطيران</button>
+                </div>
+
+                <div class="card">
+                    <div>
+                        <div class="icon">🏨</div>
+                        <h3>الفنادق والإقامة</h3>
+                        <p>السلاسل العالمية IHG، سوفيتيل، وسويس أوتيل، وأدلة البحث لشرم الشيخ، الغردقة، دبي وعالمياً.</p>
+                    </div>
+                    <button class="btn" onclick="openPage('hotels-page')">استكشاف القسم</button>
+                </div>
+
+                <div class="card">
+                    <div>
+                        <div class="icon">🌍</div>
+                        <h3>التأشيرات الإلكترونية</h3>
+                        <p>المنصات السيادية وبوابات استخراج تأشيرات الدخول المباشرة لدول الخليج، أوروبا، آسيا والأمريكتين.</p>
+                    </div>
+                    <button class="btn" onclick="openPage('visas-page')">استكشاف القسم</button>
+                </div>
+
+                <div class="card">
+                    <div>
+                        <div class="icon">🏢</div>
+                        <h3>مراكز التأشيرات</h3>
+                        <p>الروابط المعتمدة لحجز مواعيد السفارات الأوروبية والشنغن والمملكة السعودية عبر VFS Global وتأشير.</p>
+                    </div>
+                    <button class="btn" onclick="openPage('vfs-page')">استكشاف القسم</button>
+                </div>
+
+                <div class="card">
+                    <div>
+                        <div class="icon">🚗</div>
+                        <h3>تأجير السيارات</h3>
+                        <p>احجز سيارتك المثالية فور وصولك لوجهتك عبر كبرى محركات ومنصات تأجير السيارات الدولية والمحلية.</p>
+                    </div>
+                    <button class="btn" onclick="openPage('cars-page')">استكشاف القسم</button>
+                </div>
+
+                <div class="card">
+                    <div>
+                        <div class="icon">🛡️</div>
+                        <h3>التأمين الصحي للسفر</h3>
+                        <p>منصات وشركات التأمين الدولية والمحلية لإصدار وثائق التأمين الطبي الإلزامي لفيزا السفر والشنغن.</p>
+                    </div>
+                    <button class="btn" onclick="openPage('insurance-page')">استكشاف القسم</button>
+                </div>
+
+                <div class="card">
+                    <div>
+                        <div class="icon">📶</div>
+                        <h3>شرائح الإنترنت eSIM</h3>
+                        <p>شراء وباقات شرائح الاتصال المدمجة للبيانات الدولية فور وصولك لأي مطار في قارات العالم.</p>
+                    </div>
+                    <button class="btn" onclick="openPage('esim-page')">استكشاف القسم</button>
+                </div>
+
+                <div class="card">
+                    <div>
+                        <div class="icon">💳</div>
+                        <h3>البطاقات والحسابات البنكية</h3>
+                        <p>حسابات وبنوك رقمية متعددة العملات ومحافظ مخصصة للمسافرين لتسهيل الدفع والسحب الدولي.</p>
+                    </div>
+                    <button class="btn" onclick="openPage('cards-page')">استكشاف القسم</button>
+                </div>
+
+                <div class="card">
+                    <div>
+                        <div class="icon">💸</div>
+                        <h3>منصات التحويل الدولي</h3>
+                        <p>إرسال واستلام الأموال فورياً بجميع أنحاء العالم وعبر الحدود من خلال منصات آمنة معتمدة.</p>
+                    </div>
+                    <button class="btn" onclick="openPage('money-page')">استكشاف القسم</button>
+                </div>
+
+            </div>
+
+            <div id="umrah-page" class="sub-page">
+                <h2><span>🕋</span> خدمات الحج والعمرة والزيارة الشاملة</h2>
+                <div class="links-list">
+                    <div onclick="redirectToUrl('https://www.nusuk.sa')" class="site-link"><span class="site-name">🕋 منصة نسك (Nusuk) - البوابة الرسمية</span><span class="site-url">nusuk.sa</span></div>
+                    <div onclick="redirectToUrl('https://ehaj.haj.gov.sa')" class="site-link"><span class="site-name">📜 المسار الإلكتروني لحجاج الداخل والخارج</span><span class="site-url">haj.gov.sa</span></div>
+                    <div onclick="redirectToUrl('https://www.saudia.com')" class="site-link"><span class="site-name">✈️ الخطوط السعودية (Saudia)</span><span class="site-url">saudia.com</span></div>
+                    <div onclick="redirectToUrl('https://www.hhr.sa')" class="site-link"><span class="site-name">🚄 قطار الحرمين Sريع</span><span class="site-url">hhr.sa</span></div>
+                </div>
+                <button class="btn back-btn" onclick="goBack()">العودة للرئيسية</button>
+            </div>
+
+            <div id="flights-page" class="sub-page">
+                <h2><span>🎫</span> محركات ومواقع الطيران العالمية والمحلية الشاملة</h2>
+                <div class="links-list">
+                    <h3 class="section-title">🔍 كبرى محركات ومقارنة أسعار وحجوزات الطيران</h3>
+                    <div onclick="redirectToUrl('https://www.wego.com')" class="site-link"><span class="site-name">🦅 Wego Flights (ويجو المحرك الأقوى بالشرق الأوسط)</span><span class="site-url">wego.com</span></div>
+                    <div onclick="redirectToUrl('https://www.flyin.com')" class="site-link"><span class="site-name">✈️ Flyin (منصة فلاي إن الشهيرة لحجوزات الطيران)</span><span class="site-url">flyin.com</span></div>
+                    <div onclick="redirectToUrl('https://www.mytrip.com')" class="site-link"><span class="site-name">🌍 MyTrip (منصة ماي تريب العالمية)</span><span class="site-url">mytrip.com</span></div>
+                    <div onclick="redirectToUrl('https://www.trip.com')" class="site-link"><span class="site-name">🧳 Trip.com (منصة تريب دوت كوم العملاقة)</span><span class="site-url">trip.com</span></div>
+                    <div onclick="redirectToUrl('https://www.safarni.com')" class="site-link"><span class="site-name">🧭 Safarni (موقع سفرني المتميز للرحلات)</span><span class="site-url">safarni.com</span></div>
+                    <div onclick="redirectToUrl('https://www.onetravel.com')" class="site-link"><span class="site-name">🇺🇸 OneTravel (منصة ون ترافيل الدولية)</span><span class="site-url">onetravel.com</span></div>
+                    <div onclick="redirectToUrl('https://www.flywt.com')" class="site-link"><span class="site-name">🦅 Fly WT (منصة فلاي دبليو تي لخيارات السفر)</span><span class="site-url">flywt.com</span></div>
+                    <div onclick="redirectToUrl('https://www.skyscanner.com')" class="site-link"><span class="site-name">🌐 Skyscanner (سكاي سكانر العالمي للمقارنة)</span><span class="site-url">skyscanner.com</span></div>
+                    <div onclick="redirectToUrl('https://www.google.com/travel/flights')" class="site-link"><span class="site-name">✈️ Google Flights (جوجل فلايتس السريع)</span><span class="site-url">google.com/flights</span></div>
+                    <div onclick="redirectToUrl('https://www.kayak.com')" class="site-link"><span class="site-name">🛶 Kayak Flights (كاياك للبحث والمقارنة)</span><span class="site-url">kayak.com</span></div>
+                    <div onclick="redirectToUrl('https://www.kiwi.com')" class="site-link"><span class="site-name">🥝 Kiwi.com (كيوي الذكي لربط التذاكر)</span><span class="site-url">kiwi.com</span></div>
+
+                    <h3 class="section-title">🦅 شركات الطيران المباشرة والناقلات الوطنية</h3>
+                    <div onclick="redirectToUrl('https://www.egyptair.com')" class="site-link"><span class="site-name">🇪🇬 مصر للطيران (EgyptAir) - الناقل الوطني</span><span class="site-url">egyptair.com</span></div>
+                    <div onclick="redirectToUrl('https://www.aircairo.com')" class="site-link"><span class="site-name">🛫 آير كايرو (Air Cairo)</span><span class="site-url">aircairo.com</span></div>
+                    <div onclick="redirectToUrl('https://www.flynas.com')" class="site-link"><span class="site-name">🇸🇦 طيران ناس (flynas) - السعودي الاقتصادي</span><span class="site-url">flynas.com</span></div>
+                    <div onclick="redirectToUrl('https://www.saudia.com')" class="site-link"><span class="site-name">🇸🇦 الخطوط السعودية (Saudia Airlines)</span><span class="site-url">saudia.com</span></div>
+                    <div onclick="redirectToUrl('https://www.flyadeal.com')" class="site-link"><span class="site-name">🇸🇦 طيران أديل (flyadeal)</span><span class="site-url">flyadeal.com</span></div>
+                    <div onclick="redirectToUrl('https://www.airarabia.com')" class="site-link"><span class="site-name">🇦🇪 العربية للطيران (Air Arabia)</span><span class="site-url">airarabia.com</span></div>
+                    <div onclick="redirectToUrl('https://www.flydubai.com')" class="site-link"><span class="site-name">🇦🇪 فلاي دبي (flydubai)</span><span class="site-url">flydubai.com</span></div>
+                    <div onclick="redirectToUrl('https://www.emirates.com')" class="site-link"><span class="site-name">🇦🇪 طيران الإمارات (Emirates) - الفاخر</span><span class="site-url">emirates.com</span></div>
+                    <div onclick="redirectToUrl('https://www.qatarairways.com')" class="site-link"><span class="site-name">🇶🇦 الخطوط الجوية القطرية (Qatar Airways)</span><span class="site-url">qatarairways.com</span></div>
+                    <div onclick="redirectToUrl('https://www.turkishairlines.com')" class="site-link"><span class="site-name">🇹🇷 الخطوط التركية (Turkish Airlines)</span><span class="site-url">turkishairlines.com</span></div>
+                </div>
+                <button class="btn back-btn" onclick="goBack()">العودة للرئيسية</button>
+            </div>
+
+            <div id="hotels-page" class="sub-page">
+                <h2><span>🏨</span> الفنادق، السلاسل والمنتجعات العالمية</h2>
+                <div class="links-list">
+                    <h3 class="section-title">🏢 السلاسل الفندقية العالمية والمجموعات الشهيرة</h3>
+                    <div onclick="redirectToUrl('https://www.ihg.com')" class="site-link"><span class="site-name">👑 IHG Hotels & Resorts</span><span class="site-url">ihg.com</span></div>
+                    <div onclick="redirectToUrl('https://swissotel.accor.com')" class="site-link"><span class="site-name">🇨🇭 Swissôtel Hotels</span><span class="site-url">swissotel.com</span></div>
+                    <div onclick="redirectToUrl('https://sofitel.accor.com')" class="site-link"><span class="site-name">🗼 Sofitel Luxury Hotels</span><span class="site-url">sofitel.com</span></div>
+                    <div onclick="redirectToUrl('https://www.pickalbatros.com')" class="site-link"><span class="site-name">🦅 Pickalbatros Hotels</span><span class="site-url">pickalbatros.com</span></div>
+                    <div onclick="redirectToUrl('https://www.marriott.com')" class="site-link"><span class="site-name">🏨 Marriott International</span><span class="site-url">marriott.com</span></div>
+                    <div onclick="redirectToUrl('https://www.hilton.com')" class="site-link"><span class="site-name">🏨 Hilton Worldwide</span><span class="site-url">hilton.com</span></div>
+
+                    <h3 class="section-title">📍 عروض وحجوزات الفنادق حسب الوجهة</h3>
+                    <div onclick="redirectToUrl('https://www.booking.com/searchresults.html?ss=Makkah')" class="site-link"><span class="site-name">🕋 Booking Makkah (فنادق مكة المكرمة)</span><span class="site-url">booking.com/makkah</span></div>
+                    <div onclick="redirectToUrl('https://www.booking.com/searchresults.html?ss=Medina')" class="site-link"><span class="site-name">🕌 Booking Medina (فنادق المدينة المنورة)</span><span class="site-url">booking.com/medina</span></div>
+                    <div onclick="redirectToUrl('https://www.booking.com/searchresults.html?ss=Sharm+El+Sheikh')" class="site-link"><span class="site-name">🏖️ Booking Sharm (منتجعات شرم الشيخ)</span><span class="site-url">booking.com/sharm</span></div>
+                    <div onclick="redirectToUrl('https://www.booking.com/searchresults.html?ss=Hurghada')" class="site-link"><span class="site-name">🐬 Booking Hurghada (فنادق الغردقة)</span><span class="site-url">booking.com/hurghada</span></div>
+                    <div onclick="redirectToUrl('https://www.booking.com/searchresults.html?ss=Dubai')" class="site-link"><span class="site-name">🏙️ Booking Dubai (فنادق أبراج دبي الفاخرة)</span><span class="site-url">booking.com/dubai</span></div>
+                    
+                    <h3 class="section-title">🌍 محركات مقارنة الأدلة العالمية</h3>
+                    <div onclick="redirectToUrl('https://www.booking.com')" class="site-link"><span class="site-name">🛏️ Booking.com (المحرك الأول عالمياً)</span><span class="site-url">booking.com</span></div>
+                    <div onclick="redirectToUrl('https://www.agoda.com')" class="site-link"><span class="site-name">🌏 Agoda (منصة أجودا الدولية)</span><span class="site-url">agoda.com</span></div>
+                </div>
+                <button class="btn back-btn" onclick="goBack()">العودة للرئيسية</button>
+            </div>
+
+            <div id="visas-page" class="sub-page">
+                <h2><span>🌍</span> التأشيرات الإلكترونية السيادية المعتمدة</h2>
+                <div class="links-list">
+                    <div onclick="redirectToUrl('https://ksavisa.sa')" class="site-link"><span class="site-name">🔍 بوابة التأشيرة السعودية الموحدة (KSA Visa)</span><span class="site-url">ksavisa.sa</span></div>
+                    <div onclick="redirectToUrl('https://www.visa2egypt.gov.eg')" class="site-link"><span class="site-name">🇪🇬 بوابة التأشيرة الإلكترونية المصرية</span><span class="site-url">visa2egypt.gov.eg</span></div>
+                    <div onclick="redirectToUrl('https://smartservices.icp.gov.ae')" class="site-link"><span class="site-name">🇦🇪 الهيئة الاتحادية للهوية والجنسية الإماراتية</span><span class="site-url">icp.gov.ae</span></div>
+                </div>
+                <button class="btn back-btn" onclick="goBack()">العودة للرئيسية</button>
+            </div>
+
+            <div id="vfs-page" class="sub-page">
+                <h2><span>🏢</span> مراكز التأشيرات المعتمدة وسفارات العالم</h2>
+                <div class="links-list">
+                    <div onclick="redirectToUrl('https://www.vfsglobal.com')" class="site-link"><span class="site-name">🌐 VFS Global (حجز مواعيد الشنغن وأوروبا)</span><span class="site-url">vfsglobal.com</span></div>
+                    <div onclick="redirectToUrl('https://vc.tasheer.com')" class="site-link"><span class="site-name">🇸🇦 شركة تأشير (خدمات تأشيرات السعودية)</span><span class="site-url">tasheer.com</span></div>
+                </div>
+                <button class="btn back-btn" onclick="goBack()">العودة للرئيسية</button>
+            </div>
+
+            <div id="cars-page" class="sub-page">
+                <h2><span>🚗</span> كبرى منصات تأجير السيارات الدولية</h2>
+                <div class="links-list">
+                    <div onclick="redirectToUrl('https://www.rentalcars.com')" class="site-link"><span class="site-name">🚗 Rentalcars (منصة الحجز الأضخم عالمياً)</span><span class="site-url">rentalcars.com</span></div>
+                    <div onclick="redirectToUrl('https://www.discovercars.com')" class="site-link"><span class="site-name">🔍 Discover Cars لمقارنة العروض</span><span class="site-url">discovercars.com</span></div>
+                    <div onclick="redirectToUrl('https://www.sixt.com')" class="site-link"><span class="site-name">🧡 Sixt Rent a Car لسيارات الرفاهية</span><span class="site-url">sixt.com</span></div>
+                    <div onclick="redirectToUrl('https://www.budget.com')" class="site-link"><span class="site-name">🔵 Budget Car Rental الاقتصادية</span><span class="site-url">budget.com</span></div>
+                </div>
+                <button class="btn back-btn" onclick="goBack()">العودة للرئيسية</button>
+            </div>
+
+            <div id="insurance-page" class="sub-page">
+                <h2><span>🛡️</span> التأمين الصحي للسفر الدولي والشنغن</h2>
+                <div class="links-list">
+                    <div onclick="redirectToUrl('https://www.tameeni.com')" class="site-link"><span class="site-name">🛡️ تأميني (Tameeni) - إصدار تأمين فوري بالخليج</span><span class="site-url">tameeni.com</span></div>
+                    <div onclick="redirectToUrl('https://www.bupa.com')" class="site-link"><span class="site-name">💙 بوپا الدولية (Bupa Global) للمسافرين</span><span class="site-url">bupa.com</span></div>
+                    <div onclick="redirectToUrl('https://www.allianz.com')" class="site-link"><span class="site-name">🦅 أليانز العالمية (Allianz Care) للشنغن</span><span class="site-url">allianz.com</span></div>
+                </div>
+                <button class="btn back-btn" onclick="goBack()">العودة للرئيسية</button>
+            </div>
+
+            <div id="esim-page" class="sub-page">
+                <h2><span>📶</span> شرائح الإنترنت الإلكترونية eSIM</h2>
+                <div class="links-list">
+                    <div onclick="redirectToUrl('https://www.airalo.com')" class="site-link"><span class="site-name">🌐 Airalo (شرائح eSIM الدولية الأوسع انتشاراً)</span><span class="site-url">airalo.com</span></div>
+                    <div onclick="redirectToUrl('https://www.holafly.com')" class="site-link"><span class="site-name">🦉 Holafly (باقات بيانات إنترنت غير محدودة)</span><span class="site-url">holafly.com</span></div>
+                </div>
+                <button class="btn back-btn" onclick="goBack()">العودة للرئيسية</button>
+            </div>
+
+            <div id="cards-page" class="sub-page">
+                <h2><span>💳</span> المحافظ الإلكترونية والبطاقات الائتمانية الدولية</h2>
+                <div class="links-list">
+                    <div onclick="redirectToUrl('https://www.revolut.com')" class="site-link"><span class="site-name">🇬🇧 Revolut Bank البنك الرقمي الأول للمسافرين</span><span class="site-url">revolut.com</span></div>
+                    <div onclick="redirectToUrl('https://www.wise.com')" class="site-link"><span class="site-name">🟢 Wise Card بطاقة وحساب متعدد العملات</span><span class="site-url">wise.com</span></div>
+                </div>
+                <button class="btn back-btn" onclick="goBack()">العودة للرئيسية</button>
+            </div>
+
+            <div id="money-page" class="sub-page">
+                <h2><span>💸</span> منصات التحويل المالي الدولي السريع</h2>
+                <div class="links-list">
+                    <div onclick="redirectToUrl('https://www.westernunion.com')" class="site-link"><span class="site-name">💛 Western Union (ويسترن يونيون كاش فوري)</span><span class="site-url">westernunion.com</span></div>
+                    <div onclick="redirectToUrl('https://www.moneygram.com')" class="site-link"><span class="site-name">🔴 MoneyGram الشبكة العالمية لتحويل الأموال</span><span class="site-url">moneygram.com</span></div>
+                </div>
+                <button class="btn back-btn" onclick="goBack()">العودة للرئيسية</button>
+            </div>
+
+        </div>
+    </div>
+
+    <footer>
+        <p>جميع الحقوق محفوظة منصة السفر الملكية © Travel Gate Ultra 2026</p>
+    </footer>
+
+    <script>
+        function enterSite(langCode) {
+            document.getElementById('welcome-screen').style.display = 'none';
+            document.getElementById('main-wrapper').style.display = 'block';
+            if(document.getElementById('sidebar').classList.contains('active')) {
+                toggleSidebar();
+            }
+            window.scrollTo(0, 0);
+        }
+
+        function resetToWelcome() {
+            document.getElementById('main-wrapper').style.display = 'none';
+            document.getElementById('welcome-screen').style.display = 'flex';
+            document.getElementById('sidebar').classList.remove('active');
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+
+        /* دالة التحويل الذكية الملكية الموقوتة والآمنة تماماً من حظر النوافذ */
+        function redirectToUrl(targetUrl) {
+            const redirectScreen = document.getElementById('redirect-screen');
+            const progressBarFill = document.getElementById('progress-bar-fill');
+            
+            redirectScreen.style.display = 'flex';
+            progressBarFill.style.width = '0%';
+
+            let currentProgress = 0;
+            const duration = 8000; // 8 ثوانٍ
+            const intervalTime = 50; 
+            const step = (intervalTime / duration) * 100;
+
+            const timer = setInterval(() => {
+                currentProgress += step;
+                if (currentProgress >= 100) {
+                    currentProgress = 100;
+                    clearInterval(timer);
+                    
+                    // التحويل بنفس الصفحة لمنع الـ Pop up blocked نهائياً
+                    window.location.href = targetUrl;
+                }
+                progressBarFill.style.width = currentProgress + '%';
+            }, intervalTime);
+        }
+
+        // تجميع الروابط تلقائياً لنظام البحث التفاعلي والذكي الشامل
+        const allLinks = [];
+        document.querySelectorAll('.site-link').forEach(link => {
+            const onclickAttr = link.getAttribute('onclick');
+            const extractedUrl = onclickAttr ? onclickAttr.match(/'([^']+)'/)[1] : '#';
+            
+            allLinks.push({
+                targetUrl: extractedUrl,
+                name: link.querySelector('.site-name').innerText.toLowerCase(),
+                url: link.querySelector('.site-url').innerText.toLowerCase()
+            });
+        });
+
+        document.getElementById('main-search').addEventListener('input', function(e) {
+            const query = e.target.value.trim().toLowerCase();
+            const resultsSection = document.getElementById('search-results-section');
+            const resultsList = document.getElementById('search-results-list');
+
+            if (query.length < 2) {
+                resultsSection.style.display = 'none';
+                resultsList.innerHTML = '';
+                return;
+            }
+
+            // كلمات دلالية ذكية لربط جميع المواقع المضافة حديثاً بمحرك البحث السريع
+            const dynamicKeywords = {
+                'wego': ['wego', 'ويجو'],
+                'flyin': ['flyin', 'فلاي إن', 'فلاي ان'],
+                'mytrip': ['mytrip', 'ماي تريب'],
+                'trip': ['trip', 'trip.com', 'تريب'],
+                'safarni': ['safarni', 'سفرني'],
+                'one travel': ['onetravel', 'ون ترافيل', 'وان ترافيل'],
+                'fly wt': ['flywt', 'فلاي', 'wt'],
+                'طيران': ['flight', 'wego', 'flyin', 'mytrip', 'trip', 'safarni', 'onetravel', 'flywt', 'skyscanner', 'egyptair', 'emirates', 'qatar', 'nas', 'adeal'],
+                'سيارات': ['car', 'rentalcars', 'discover', 'sixt', 'budget'],
+                'تأمين': ['insurance', 'tameeni', 'bupa', 'allianz'],
+                'عمرة': ['umrah', 'نسك', 'nusuk']
+            };
+
+            let relatedTerms = [query];
+            for (let key in dynamicKeywords) {
+                if (query.includes(key) || key.includes(query)) {
+                    relatedTerms = relatedTerms.concat(dynamicKeywords[key]);
+                }
+            }
+
+            const filteredLinks = allLinks.filter(item => {
+                return relatedTerms.some(term => item.name.includes(term) || item.url.includes(term));
+            });
+
+            if (filteredLinks.length > 0) {
+                resultsList.innerHTML = filteredLinks.map(item => `
+                    <div onclick="redirectToUrl('${item.targetUrl}')" class="site-link">
+                        <span class="site-name">${item.name}</span>
+                        <span class="site-url">${item.url}</span>
+                    </div>
+                `).join('');
+                resultsSection.style.display = 'block';
+            } else {
+                resultsList.innerHTML = '<p style="grid-column: 1/-1; color: var(--text-muted); text-align: center;">لم نجد نتائج مطابقة...</p>';
+                resultsSection.style.display = 'block';
+            }
+        });
+
+        function openPage(pageId) {
+            document.getElementById('main-page').style.display = 'none';
+            document.querySelectorAll('.sub-page').forEach(page => page.style.display = 'none');
+            document.getElementById(pageId).style.display = 'block';
+            window.scrollTo(0, 0);
+        }
+
+        function goBack() {
+            document.querySelectorAll('.sub-page').forEach(page => page.style.display = 'none');
+            document.getElementById('main-page').style.display = 'grid';
+            document.getElementById('main-search').value = '';
+            document.getElementById('search-results-section').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
